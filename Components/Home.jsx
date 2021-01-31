@@ -56,7 +56,7 @@ function MyTabBar({ state, descriptors, navigation }) {
             onLongPress={onLongPress}
             
             style={{  flex: 1,
-                flexDirection: 'column',borderRadius:50,marginBottom:20}}
+                flexDirection: 'column',borderRadius:50,marginBottom:10,marginTop:10}}
           >
               <Icon
                 color={ isFocused ? '#000' : '#d1cdcd' }
