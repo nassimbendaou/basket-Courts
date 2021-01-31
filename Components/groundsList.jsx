@@ -1,5 +1,5 @@
 import React, { useState,useRef,useEffect } from 'react';
-import { Text, View, Dimensions, StyleSheet,Image ,TouchableOpacity } from 'react-native';
+import { Text, View, Dimensions, StyleSheet,Image ,TouchableOpacity,ScrollView } from 'react-native';
 import Carousel from 'react-native-snap-carousel'; 
 
 import { Icon } from "react-native-elements";
@@ -64,7 +64,7 @@ const GroundsList = (props) => {
 }
     return (
 
-      <View style={{backgroundColor:"#fff",flex:1}}>
+      <ScrollView style={{backgroundColor:"#fff",flex:1}}>
         <View style={{alignItems:"center",marginTop:15}}>
         <View style={{flexDirection:"row",alignItems:"center"}}>
                       <Icon
@@ -99,7 +99,7 @@ const GroundsList = (props) => {
               />
         
         
-      </View>
+      </ScrollView>
     );
   }
 
