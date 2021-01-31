@@ -1,153 +1,111 @@
-import React, { useState,useRef,useEffect } from 'react';
-import { Text, View, Dimensions, StyleSheet,Image ,TouchableOpacity } from 'react-native';
-import Carousel from 'react-native-snap-carousel'; 
 
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity,Image,Dimensions } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from "react-native-elements";
-import DataFetcher from '../Utils/DataFetcher'
-import AppLoading from 'expo-app-loading';
-import { scrollInterpolator, animatedStyles } from '../Utils/animation';
-import { useFonts, LobsterTwo_700Bold } from '@expo-google-fonts/lobster-two';
 
+import Favorits from './Favorits'
 
-const SLIDER_WIDTH = Dimensions.get('window').width;
-const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
-const ITEM_HEIGHT = Math.round(ITEM_WIDTH * 3 / 4);
+import GroundsList from './groundsList'
+import Ground from './ground'
 
 
 
-const HomeScreen = (props) => {
-  const { navigation } = props;
-    const carouselRef = useRef(null);
-    const [data, setData] = useState([]);
 
-  
-    useEffect(() => {
+function MyTabBar({ state, descriptors, navigation }) {
+  return (
+    <View style={{ flexDirection: 'row' ,backgroundColor:"white"}}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
 
-        setData(  DataFetcher.shared.getData());
-    
-      
-  
-     
-    }, [])
-    let [fontsLoaded] =useFonts({
-      LobsterTwo_700Bold,
-    });
+        const isFocused = state.index === index;
 
-  const _renderItem=({item})=>{
-    return (
-      <TouchableOpacity onPress={()=>{
-    
-        navigation.navigate("Infos",{
-       groundid:item.idGround
-      })}}>
-        <View style={styles.itemContainer}>
-         
-        <Image    source={{uri:item.groundPhoto}} style={styles.itemLabel}/>
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+
+        return (
+          <TouchableOpacity
         
-      </View>
-      <TouchableOpacity style={styles.TextContainor}>
-      <Text style={styles.counter}
-      >
-       {item.groundName}
-      </Text>
-      <Text style={styles.subText}
-      >
-       {item.address}
-      </Text></TouchableOpacity>
-      </TouchableOpacity>
-    )
-}
-
- if (!fontsLoaded) {
-  return <AppLoading />;
-}
-    return (
-
-      <View style={{backgroundColor:"#fff",flex:1}}>
-        <View style={{alignItems:"center",marginTop:15}}>
-        <View style={{flexDirection:"row",alignItems:"center"}}>
-                      <Icon
-              color={'#000' }
-                            
-              disabledStyle={{}}
-              iconProps={{}}
-              iconStyle={{}}
-              name={"basketball"}
-              onLongPress={() => onLongPress()}
-              onPress={() => onPress()}
-              size={30}
-
-              type="material-community"
-              />
-               <Text style={{fontFamily:"LobsterTwo_700Bold",fontSize:22,fontWeight: 'bold',
-                 textAlign: 'center'}}>Uballers</Text> 
-              </View>
-              </View>
-              <Carousel
-                ref={carouselRef}
-                data={data}
-                renderItem={ _renderItem}
-                sliderWidth={SLIDER_WIDTH}
-                itemWidth={ITEM_WIDTH}
-                containerCustomStyle={styles.carouselContainer}
-                inactiveSlideShift={0}
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            
+            style={{  flex: 1,
+                flexDirection: 'column',borderRadius:50,marginBottom:20}}
+          >
+              <Icon
+                color={ isFocused ? '#000' : '#d1cdcd' }
+               
+                disabledStyle={{}}
+                iconProps={{}}
+                iconStyle={{borderColor:"#000"}}
+                name={label}
+                onLongPress={() => onLongPress()}
+                onPress={() => onPress()}
+                size={26}
               
-                scrollInterpolator={scrollInterpolator}
-                slideInterpolatedStyle={animatedStyles}
-                useScrollView={true}          
-              />
+                type="simple-line-icon"
+                />
+         
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+const Stack = createStackNavigator();
+
+function MyStack() {
+  return (
+    <Stack.Navigator   screenOptions={{
+      headerShown: false
+    }}>
+       <Stack.Screen name="MainPage" component={myAppBottomBar}/>
+      <Stack.Screen name="Infos" component={Ground}  />
+     
+    </Stack.Navigator>
+  );
+}
+const  myAppBottomBar=()=>{
+ return( <Tab.Navigator tabBar={props => <MyTabBar {...props} />}>
+        <Tab.Screen name="home" component={GroundsList} />
         
-        
-      </View>
-    );
-  }
+        <Tab.Screen name="star" component={Favorits} />
+      </Tab.Navigator>)
+}
 
-const styles = StyleSheet.create({
-  carouselContainer: {
-    marginTop: 50
-  },
-  itemContainer: {
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
+const Tab = createBottomTabNavigator();
 
-  },
-  itemLabel: {
-    borderRadius:20,
-   width:300,
-   height:378,
-    
-  },
-  itemTop: {
-    borderRadius:20,
-  height:70,
-
-  },
-  counter: {
-    color:"#000",
-    marginBottom: 10,
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginLeft:10,
-    alignItems:"center"
-  
-  }
-  ,TextContainor:
-  {
-    height:50,
-    
-   marginTop:25,
-  
-    borderTopEndRadius:20,
-
-  },
-  subText:{
-    color:"#808080",
-    marginBottom: 10,
-    fontSize: 15,
-   
-    marginLeft:10,
-    alignItems:"center"
-  }
-});
-export default HomeScreen;
+export default function Home() {
+  return (
+    <NavigationContainer >
+      
+      <MyStack />
+    </NavigationContainer>
+  );
+}
