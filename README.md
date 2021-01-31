@@ -1,5 +1,5 @@
 # basket-Courts
-pour ustiliser cette application il suffit de se rederiger vers le dossier de après la commande git clone et
+pour ustiliser cette application il suffit de se rederiger vers le dossier de l'application après la commande git clone et
 executer la commande npm install pour installer les (node_modules) de cette application.
 l'application contient 3 page principale .
 groundList,ground et favorits.
