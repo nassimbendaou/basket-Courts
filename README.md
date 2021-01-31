@@ -15,3 +15,4 @@ dans cette page on affiche toutes les informations du terrain et il y a possibil
 dans cette page on affiche tout les terrain favoris dans une liste pour refreaichir cette list il suffit de faire un swipe-down.
 ![](./favorit.gif)
  
+vous pouvez tester l'application avec https://expo.io/@bennassim/projects/basketCourts 😆
